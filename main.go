@@ -2,6 +2,7 @@
 package main
 
 import (
+	"gin2023/routers"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,9 @@ import (
 
 func main() {
 	r := gin.Default()
+
+	routers.InitRouters(r)
+
 	v2 := r.Group("/v2")
 	v1 := r.Group("/v1")
 	v1.GET("/ping", func(c *gin.Context) {
