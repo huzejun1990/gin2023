@@ -7,39 +7,53 @@ import (
 )
 
 type course struct {
-	Name     string
-	Teacher  string
-	Duration int
+	Name     string `form:"name" json:"name" binding:"required,alphaunicode"`
+	Teacher  string `form:"teacher" json:"teacher" binding:"required,alphaunicode"`
+	Duration string `form:"duration" json:"duration" binding:"required,number"`
 }
 
 func Add(c *gin.Context) {
 	req := &course{}
 	err := c.ShouldBind(req)
-	err := c.Bind(req)
-
-	c.JSON(http.StatusOK, gin.H{
-		"method": c.Request.Method,
-		"path":   c.Request.URL.Path,
-	})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	//c.JSON(http.StatusOK, req)
+	out := &AddCourseResponse{
+		Name:     req.Name,
+		Teacher:  req.Teacher,
+		Duration: req.Duration,
+	}
+	//c.ProtoBuf(http.StatusOK, out)
+	c.ProtoBuf(http.StatusOK, out)
 }
 
 func Get(c *gin.Context) {
+	id := c.Param("id")
 	c.JSON(http.StatusOK, gin.H{
-		"method": c.Request.Method,
-		"path":   c.Request.URL.Path,
+		"id": id,
 	})
 }
 
 func Update(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"method": c.Request.Method,
-		"path":   c.Request.URL.Path,
-	})
+	req := &course{}
+	err := c.BindJSON(req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, req)
 }
 
 func Delete(c *gin.Context) {
+	id := c.Query("id")
+
 	c.JSON(http.StatusOK, gin.H{
-		"method": c.Request.Method,
-		"path":   c.Request.URL.Path,
+		"id": id,
 	})
 }

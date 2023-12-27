@@ -14,10 +14,9 @@ func AddV2(c *gin.Context) {
 }
 
 func GetV2(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"method": c.Request.Method,
-		"path":   c.Request.URL.Path,
-	})
+	authInfo, _ := c.Get("auth_info")
+
+	c.JSON(http.StatusOK, authInfo)
 }
 
 func UpdateV2(c *gin.Context) {

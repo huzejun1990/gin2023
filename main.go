@@ -2,14 +2,21 @@
 package main
 
 import (
+	"fmt"
 	"gin2023/routers"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	r := gin.Default()
+
+	//fmt.Println(Sum(1,2))
+	fmt.Println(LogMiddleware(LogMiddleware(Sum))(1, 2))
+	//return
+	r := gin.New()
+	r.Use(gin.Logger(), gin.Recovery())
 
 	routers.InitRouters(r)
 
@@ -26,4 +33,15 @@ func main() {
 		})
 	})
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+}
+
+func Sum(a, b int) int {
+	return a + b
+}
+
+func LogMiddleware(in func(a, b int) int) func(a, b int) int {
+	return func(a, b int) int {
+		log.Println("called LogMiddleware")
+		return in(a, b)
+	}
 }
